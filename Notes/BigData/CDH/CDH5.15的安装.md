@@ -195,11 +195,11 @@ sudo cat /root/.mysql_secret
 mysql -uroot -p临时密码
 ```
 ##### 3.2. 修改密码
-```shell
+```sql
 set password=password(‘123456’);
 ```
 ##### 3.3. 配置远程连接
-```shell
+```sql
 # 修改连接方式为%：
 use mysql;
 update user set host=‘%’ where host=‘localhost’;
@@ -207,7 +207,7 @@ update user set host=‘%’ where host=‘localhost’;
 flush privileges;
 ```
 ##### 3.4. 创建CM的数据库
-```shell
+```sql
 create database hive DEFAULT utf8 COLLATE utf8_general_ci;
 create database amon DEFAULT utf8 COLLATE utf8_general_ci;
 create database hue DEFAULT utf8 COLLATE utf8_general_ci;
@@ -236,7 +236,7 @@ sudo yum -y install chkconfig python bind-utils psmisc libxslt zlib sqlite cyrus
 # 复制驱动包到/usr/share/java并改名
 sudo cp mysql-connector-java-5.1.14-bin.jar /usr/share/java/mysql-connector-java.jar
 # 复制驱动包到cm-5.15.2/share/cmf/lib并改名
-cp mysql-connector-java-5.1.14-bin.jar /usr/share/java/mysql-connector-java.jar
+cp mysql-connector-java-5.1.14-bin.jar cm-5.15.2/share/cmf/lib/mysql-connector-java.jar
 ```
 ### 4. 修改Agent配置
 ```shell
@@ -247,7 +247,7 @@ server_host=cdh001
 ```
 ### 5. 分发文件到其他节点
 #### 5.1. 分发脚本
-```shell
+```bash
 #!/bin/bash
 #
 #1 获取输入参数个数，如果没有参数，直接退出
@@ -320,13 +320,16 @@ sudo netstat -anp | grep 7180
 ## 三、安装服务
 ### （一）Web页面安装CDH组件
 #### 1. 登录Web页面
+* 地址：ServerHost:7180
 * 用户名：admin
 * 密码：admin
 #### 2. 选择CM版本
 #### 3. 选择主机
 #### 4. 选择parcel方式安装
+* 此处默认看不到上传的parcel，点击更多设置，将parcel文件的路径改为服务器上的实际路径，然后所有节点重启服务
 #### 5. 将CDH部署到所有节点并激活
 #### 6. 主机检查
+* 按提示修改服务器配置即可
 #### 7. 选择需要安装的组件
 #### 8. 配置主机角色
 #### 9. 配置数据库
@@ -340,11 +343,11 @@ sudo netstat -anp | grep 7180
 * 下载parcel：[下载Spark2/parcel](http://archive:cloudera.com/spark2/parcels/2.3.0.cloudera4)
 * parcel的版本必须与csd相匹配
 #### 2. 上传文件
-* 将在csd页面下载的jar包上传到……cloudera/csd文件下
+* 将在csd页面下载的jar包上传到……cloudera/csd文件下，修改所有者为cloudera-scm
 * 将剩余的3个文件上传到主机的……cloudera/parcel-repo文件夹下，并将…….sha1文件改名为…….sha，修改所有者为cloudera-scm
 #### 3. 集群部署
 ##### 3.1 配置路径
-* CM主页：管理->设置，搜索本地，修改csd、parcel-repo、parcels路径，重启server和agent服务
+* CM主页：管理->设置，搜索本地，修改csd、parcel-repo、parcels路径，所有节点重启server和agent服务
 ##### 3.2 激活
 * CM主页：主机->parcel，选择Spark2，分配->激活
 ##### 3.3 添加服务
