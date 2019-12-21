@@ -383,34 +383,34 @@ com.hadoop.compression.lzo.LzopCodec
 ---
 ## 四、安装过程中的一些问题及解决办法
 ### （一）Server启动问题
-```
+```shell
 ERROR main:org.hibernate.engine.jdbc.spi.SqlExceptionHelper: Table ‘cm.CM_VERSION’ doesn’t exist
 #
 # 缺少表cm.CM_VERSION，不影响使用，可忽略
 ```
-```
+```shell
 ERROR WebServerImpl:com.cloudera.server.web.cmf.search.components.SearchRepositoryManager: The server storage directory [/var/lib/cloudera-scm-server] doesn’t exist
 #
 # 手动创建/var/lib/cloudera-scm-server
 ```
-```
+```shell
 ERROR WebServerImpl:com.cloudera.server.web.cmf.search.components.SearchRepositoryManager: No read/write permission to the server storage directory [/var/lib/cloudera-scm-server]
 #
 # 手动修改[/var/lib/cloudera-scm-server]文件夹所有者
 ```
-```
+```shell
 ERROR ParcelUpdateService:com.cloudera.parcel.components.ParcelDownloaderImpl: Unable to retrieve remote parcel repository manifest
 #
 # 服务器未联网，无法从cm官网获取manifest，不影响使用，可忽略
 ```
 ### （二）Agent启动问题
-```
+```shell
 MainThread agent ERROR Failed to connect to previous supervisor.
 #
 # 1）确保集群NTP同步服务有效后重启agent
 # 2）服务器重启后在启动agent有时也会报此错误，此时杀掉supervisor进程，重启agent
 ```
-```
+```shell
 MainThread parcel ERROR Failed to activate alternatives for parcel ……
 MainThread parcel ERROR Failed to deactivate alternatives for parcel ……
 #
@@ -418,12 +418,12 @@ MainThread parcel ERROR Failed to deactivate alternatives for parcel ……
 # 2）脚本命令连接至：parcels/CDH/bin
 # 3）conf路径连接至：parcels/CDH/etc/组件名/conf.
 ```
-```
+```shell
 MonitorDaemom-Reporter throttling_logger ERROR sending messages to firehose: mgmt-HOSTMONITOR-……
 #
 # 前一项错误未处理agent进程也不会dead，但在Web安装组件时会报此错误，处理完即可解决
 ```
-```
+```shell
 Monitor-GenericMonitor throttling_logger ERROR fetching metrics at ‘http://host:60030/jmx’
 #
 # 检查主机名、hosts、agent的server配置是否一致
@@ -476,7 +476,7 @@ sudo yum -y install httpd mod_ssl
 </property>
 ```
 ##### 2.3. 修改Hue配置（hue_safety_value）
-```p
+```properties
 [hbase]
 hbase_conf_dir={{HBASE_CONF_DIR}}
 thrift_transport=buffered
