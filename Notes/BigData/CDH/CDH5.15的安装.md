@@ -2,7 +2,7 @@
 
 ---
 ## 一、准备工作
-<font color=#DC143C>！！！注意：以下操作除MySQL的安装外所有点都需要执行，且需要root权限</font>
+<font color=#DC143C>！！！注意：以下操作除MySQL的安装外所有点都需要执行，且需要root权限！！！</font>
 ### （一）关闭防火墙、SELINUX、IPv6
 #### 1. 修改主机名及hosts
 ##### 1.1. 修改主机名
@@ -127,7 +127,7 @@ sudo systemctl enable ntpd
 
 ---
 ### （三）配置集群间ssh免密登录
-<font color=#DC143C>！！！注意：为防止出错，所有节点之间都要配置</font>
+<font color=#DC143C>！！！注意：为防止出错，所有节点之间都要配置！！！</font>
 #### 1. 生成秘钥
 ```shell
 ssh-keygen -t rsa
@@ -159,4 +159,18 @@ sudo yum remove -y copy-jdk-config…
 ##### 2.1. 上传下载的tar包并解压
 ```shell
 tar -zxvf jdk-8u181-linux-x64.tar.gz -C /usr/openv
+```
+#### 3. 配置环境变量
+##### 3.1. 修改/etc/profile
+```shell
+sudo vim /etc/profile
+# 增加：
+#JAVA_HOME
+export JAVA_HOME=/usr/openv/jdk1.8.0_181
+export PATH=$PATH:$JAVA_HOME/bin
+```
+##### 3.2. 为CM创建软连接
+* CDH不会自动使用系统环境变量中的JAVA_HOME，而是使用Bigtop进行管理，如果不是在默认位置安装的jdk，就需要创建软连接工CDH使用。
+```shell
+sudo ln -s /usr/openv/jdk1.8.0_181 jdk1.8
 ```
