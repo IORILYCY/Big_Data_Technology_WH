@@ -5,6 +5,9 @@
     "sub_directories": [
         {
             "name": "CDH"
+        },
+        {
+            "name": "推荐系统"
         }
     ],
     "version": "1"
