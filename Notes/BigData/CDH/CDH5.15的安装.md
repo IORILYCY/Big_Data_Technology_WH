@@ -225,8 +225,7 @@ create database sentry DEFAULT utf8 COLLATE utf8_general_ci;
 # 创建安装路径：
 mkdir /usr/openv/cdh-5.15.2
 # 解压CM：
-tar -zxvf cloudera-manager-centos7-cm5.15.2_x86_64.tar.gz -C \
-/usr/openv/cdh-5.15.2
+tar -zxvf cloudera-manager-centos7-cm5.15.2_x86_64.tar.gz -C /usr/openv/cdh-5.15.2
 ```
 ### 2. 安装第三方依赖
 ```shell
@@ -365,18 +364,18 @@ sudo netstat -anp | grep 7180
 2. 选择GPLEXTRAS，分配->激活
 ##### 2.2 修改HDFS配置
 * 压缩格式添加：
-```
+```shell
 com.hadoop.compression.lzo.LzoCodec
 com.hadoop.compression.lzo.LzopCodec
 ```
 ##### 2.3 修改YARN配置
 1. MR程序classpath添加：
-```
+```shell
 ……/CDH/cloudera/parcels/GPLEXTRAS/lib/hadoop/lib
 ```
 2. MR程序运行环境添加：
-```
-;……/ CDH/cloudera/parcels/GPLEXTRAS/lib/hadoop/lib/native
+```shell
+;……/CDH/cloudera/parcels/GPLEXTRAS/lib/hadoop/lib/native
 ```
 
 ---
@@ -431,7 +430,7 @@ Monitor-GenericMonitor throttling_logger ERROR fetching metrics at ‘http://hos
 
 ---
 ### （三）HDFS权限报错
-CDH默认用户hdfs:supergroup为HDFS的最高管理用户，普通用户启动spark、kylin等对HDFS有写需求的服务时会报对HDFS没有写权限的错，此时可通过将用户添加到supergroup组来解决权限问题
+* CDH默认用户hdfs:supergroup为HDFS的最高管理用户，普通用户启动spark、kylin等对HDFS有写需求的服务时会报对HDFS没有写权限的错，此时可通过将用户添加到supergroup组来解决权限问题
 #### 1. 添加supergroup组
 ```shell
 sudo groupadd supergroup
