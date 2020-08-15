@@ -13,7 +13,13 @@
             "name": "Python"
         },
         {
-            "name": "Kylin"
+            "name": "Scala"
+        },
+        {
+            "name": "Data Structure & Algorithm"
+        },
+        {
+            "name": "简历"
         }
     ],
     "tags": [

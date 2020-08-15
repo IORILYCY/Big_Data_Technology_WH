@@ -1,0 +1,17 @@
+{
+    "created_time": "2020-05-23T12:54:05Z",
+    "files": [
+    ],
+    "sub_directories": [
+        {
+            "name": "推荐系统"
+        },
+        {
+            "name": "数仓项目"
+        },
+        {
+            "name": "实时数仓"
+        }
+    ],
+    "version": "1"
+}

@@ -4,10 +4,10 @@
     ],
     "sub_directories": [
         {
-            "name": "Python基础"
+            "name": "Python数据分析"
         },
         {
-            "name": "脚本"
+            "name": "Python机器学习"
         }
     ],
     "version": "1"

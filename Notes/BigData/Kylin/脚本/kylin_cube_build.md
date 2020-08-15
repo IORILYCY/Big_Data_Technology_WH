@@ -20,16 +20,18 @@ cube_name=$(getparam cube_name)
 today=$(date +%F)
 ebd_date=$(getparam ebd_date)
 mode=$(getparam mode)
+kylin_env=$(getparam kylin_env)
 
 # 2、获取用户验证密文
 if [ ! -n "${user}" -a ! -n "${passwd}" ]; then
 	echo "User is ADMIN"
-	usr=
+	user="ADMIN"
+	usr=""
 elif [ -n "${user}" -a -n "${passwd}" ]; then
 	echo "User is ${user}"
 	usr=$(python -c "import base64; print base64.standard_b64encode('${user}:${passwd}')")
 else
-	echo "Please set user and password!"
+	echo "请配置正确的用户及密码!"
 fi
 
 # 3、获取Cube结束时间
@@ -41,8 +43,19 @@ else
 	end=$[$(date -d "${end_date} 08:00:00" +%s) * 1000]
 fi
 
-# 4、构建Cube
-# 4.1、初始构建
+# 4、判断环境，测试、生产，通过参数kylin_env，如果kylin_env=kylin-stg
+if [[ "${kylin_env}" =~ "-stg" ]];then
+    stg-prd=stg
+    kylin_host=
+else
+    stg-prd=prd
+    kylin_host=
+fi
+echo "stg-prd: ${stg-prd}"
+echo "kylin_host: ${kylin_host}"
+
+# 5、构建Cube
+# 5.1、初始构建
 if [ ${mode} == 'build' ]; then
 	# 输出Cube信息
 	echo "***************Rebuild Cube***************"
@@ -51,15 +64,13 @@ if [ ${mode} == 'build' ]; then
 	echo "Mode       ${mode}"
 
 	# 构建Cube
-	nohup \
 	curl -X PUT \
 	-H "Authorization: Basic ${usr}" \
 	-H "Connect-Type: application/json" \
 	-d '{"buildType":"BUILD"}' \
-	http://kylin-host:port/kylin/api/cubes/${cube_name}/build \
-	>dev/null 2>&1 &
+	http://${kylin_host}:port/kylin/api/cubes/${cube_name}/build
 
-# 4.2、增量构建
+# 5.2、增量构建
 elif [ ${mode} == 'rebuild' ]; then
 	# 输出Cube信息
 	echo "***************Rebuild Cube***************"
@@ -67,16 +78,15 @@ elif [ ${mode} == 'rebuild' ]; then
 	echo "User       ${user}"
 	echo "Mode       ${mode}"
 	echo "EndTime    $(date -d @$[${end} / 1000 - 28800] "+%Y-%m-%d %H:%M:%S")"
+
 	# 构建Cube
-	nohup \
 	curl -X PUT \
 	-H "Authorization: Basic ${usr}" \
 	-H "Connect-Type: application/json" \
 	-d '{"endTime":'${end}', "buildType":"BUILD"}' \
-	http://kylin-host:port/kylin/api/cubes/${cube_name}/rebuild \
-	>dev/null 2>&1 &
+	http://${kylin_host}:port/kylin/api/cubes/${cube_name}/rebuild
 
-# 4.3、全量刷新
+# 5.3、全量刷新
 elif [ ${mode} == 'refresh' ]; then
 	# 输出Cube信息
 	echo "***************Refresh Cube***************"
@@ -84,16 +94,15 @@ elif [ ${mode} == 'refresh' ]; then
 	echo "User       ${user}"
 	echo "Mode       ${mode}"
 	echo "***************Refresh Cube***************"
+
 	# 构建Cube
-	nohup \
 	curl -X PUT \
 	-H "Authorization: Basic ${usr}" \
 	-H "Connect-Type: application/json" \
 	-d '{"buildType":"REFRESH"}' \
-	http://kylin-host:port/kylin/api/cubes/${cube_name}/build \
-	>dev/null 2>&1 &
+	http://${kylin_host}:port/kylin/api/cubes/${cube_name}/build
 
 else
-	echo "Please set a mode! (such as -mode=build / -mode=rebuild / -mode=refresh)"
+	echo "请配置正确的构建模式! ( build / rebuild / refresh )"
 fi
 ```
