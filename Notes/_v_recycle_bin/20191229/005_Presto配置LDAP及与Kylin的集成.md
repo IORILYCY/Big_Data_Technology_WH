@@ -1,1 +1,0 @@
-# 005_Presto配置LDAP及与Kylin的集成
