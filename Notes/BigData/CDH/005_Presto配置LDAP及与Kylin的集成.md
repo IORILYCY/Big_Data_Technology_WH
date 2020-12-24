@@ -1,1 +1,1 @@
-# 005_Presto配置LDAP及与Kylin的集成
+# 005_Presto配置LDAP及Kylin的下压配置
