@@ -83,10 +83,11 @@ sqoop_eval="sqoop_eval --connect ${pg_connection} --username ${username} --passw
 pg_data=$(${sqoop_eval} "select count(*) from ${table_name}")
 pg_data_num=$(echo "${pg_data}" | awk -F'|' '{print $4}' | tr -d " ")
 
+echo_str="${table_name} 在pg库中数据量为 ${pg_data_num} ，导入到hive库的数据量为 ${hive_data_num}"
 if [[ ${hive_data_num} == "${pg_data_num}" ]]; then
-    echo "\033[5;31;1m SUCCESSFUL:\033[0m ${table_name} 在hive中数据量为 ${hive_data_num} ，导出到pg库的数据量为 ${pg_data_num} ，数据量一致！"
+    echo "\033[5;31;1m SUCCESSFUL:\033[0m ${echo_str} ，数据量一致！"
     exit 0
 else
-    echo "\033[5;31;1m SUCCESSFUL:\033[0m ${table_name} 在hive中数据量为 ${hive_data_num} ，导出到pg库的数据量为 ${pg_data_num} ，数据量不一致，请查明原因！"
+    echo "\033[5;31;1m SUCCESSFUL:\033[0m ${echo_str} ，数据量不一致，请查明原因！"
     exit 1
 fi

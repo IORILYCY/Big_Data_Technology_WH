@@ -1,8 +1,11 @@
 # Entry for a sample people container
 # Please replace with site specific values
+#!RESULT OK
+#!CONNECTION ldap://dw303:10389
+#!DATE 2020-12-24T19:57:22.526
 dn: ou=people,dc=hadoop,dc=apache,dc=org
-objectclass:top
-objectclass:organizationalUnit
+objectclass: top
+objectclass: organizationalUnit
 ou: people
 
 # Entry for a sample end user
@@ -18,49 +21,64 @@ ou: people
 # userPassword:guest-password
 
 # entry for sample user admin
+#!RESULT OK
+#!CONNECTION ldap://dw303:10389
+#!DATE 2020-12-24T19:57:22.536
 dn: uid=admin,ou=people,dc=hadoop,dc=apache,dc=org
-objectclass:top
-objectclass:person
-objectclass:organizationalPerson
-objectclass:inetOrgPerson
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
 cn: Admin
 sn: Admin
 uid: admin
-userPassword:123456
+userPassword: dqwh880206
 
 # entry for sample user presto
+#!RESULT OK
+#!CONNECTION ldap://dw303:10389
+#!DATE 2020-12-24T19:57:22.547
 dn: uid=presto,ou=people,dc=hadoop,dc=apache,dc=org
-objectclass:top
-objectclass:person
-objectclass:organizationalPerson
-objectclass:inetOrgPerson
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
 cn: Presto
 sn: Presto
 uid: presto
-userPassword:123456
+userPassword: dqwh880206
 
 
 # create FIRST Level groups branch
+#!RESULT OK
+#!CONNECTION ldap://dw303:10389
+#!DATE 2020-12-24T19:57:22.554
 dn: ou=groups,dc=hadoop,dc=apache,dc=org
-objectclass:top
-objectclass:organizationalUnit
+objectclass: top
+objectclass: organizationalUnit
 ou: groups
 description: generic groups branch
 
 # create the analyst group under groups
+#!RESULT OK
+#!CONNECTION ldap://dw303:10389
+#!DATE 2020-12-24T19:57:22.561
 dn: cn=analyst,ou=groups,dc=hadoop,dc=apache,dc=org
-objectclass:top
+objectclass: top
 objectclass: groupofnames
 cn: analyst
-description:analyst  group
+description: analyst  group
 member: uid=sam,ou=people,dc=hadoop,dc=apache,dc=org
 member: uid=tom,ou=people,dc=hadoop,dc=apache,dc=org
 
 
 # create the scientist group under groups
+#!RESULT OK
+#!CONNECTION ldap://dw303:10389
+#!DATE 2020-12-24T19:57:22.575
 dn: cn=scientist,ou=groups,dc=hadoop,dc=apache,dc=org
-objectclass:top
+objectclass: top
 objectclass: groupofnames
 cn: scientist
 description: scientist group
-member: uid=sam,ou=people,dc=hadoop,dc=apache,dc=or
+member: uid=sam,ou=people,dc=hadoop,dc=apache,dc=org
