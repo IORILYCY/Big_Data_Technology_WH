@@ -317,7 +317,7 @@ fi
 
 end=$(($(date -d "${end_dt} 08:00:00" +%s) * 1000))
 
-# 4、判断环境，测试、生产，通过参数kylin_env，如果kylin_env=kylin-stg
+# 4、判断环境，测试、生产
 if [[ "${hdfs_host}" =~ "-stg" ]]; then
     stg-prd=stg
     kylin_host1=
