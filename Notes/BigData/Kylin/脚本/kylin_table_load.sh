@@ -41,8 +41,8 @@ user=$(getparam user)
 passwd=$(getparam passwd)
 hdfs_host=$(getparam hdfs_host)
 
-project=
-tables="database.table1,database.table2,……"
+project=$(getparam project)
+tables=$(getparam task_instance_name) # 传入多个表名用“,”做分隔符
 
 # 2、获取用户验证密文
 if [[ -z "${user}" ]] && [[ -z "${passwd}" ]]; then

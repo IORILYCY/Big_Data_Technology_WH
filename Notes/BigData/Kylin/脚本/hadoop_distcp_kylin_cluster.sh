@@ -63,9 +63,10 @@ datalake2kyliln() {
 database=$(getparam hive_db_name)
 queue_name=$(getparam hdp_queue)
 hdfs_host=$(getparam hdfs_host)
-instance_name=$(getparam task_instance_name)
+instance_name=$(getparam task_instance_name) # 传入多个表名用“,”做分隔符
 
-tables=(${instance_name//,/ })
+# tables=(${instance_name//,/ })
+IFS=" " read -r -a tables <<< "${instance_name//,/ }"
 
 # 2、判断环境，测试、生产
 if [[ "${hdfs_host}" =~ "-stg" ]]; then
@@ -83,7 +84,7 @@ echo "nn2_host: ${nn2_host}"
 
 # 3、数据同步
 echo "---------------Export data---------------"
-datalake2kyliln "${database}" "${queue_name}" "${tables}" "${nn1_host}" "${nn2_host}"
+datalake2kyliln "${database}" "${queue_name}" "${tables[@]}" "${nn1_host}" "${nn2_host}"
 echo "---------------Export data---------------"
 
 exitCodeCheck $?
