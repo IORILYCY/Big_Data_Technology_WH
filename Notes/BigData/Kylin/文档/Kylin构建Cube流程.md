@@ -1,10 +1,10 @@
 # Cube 构建
-* Kylin将Cube构建任务分解为几个依次执行的步骤，这些步骤包括Hive操作、MapReduce操作和其他类型的操作。如果你有很多Cube构建任务需要每天运行，那么你肯定想要减少其中消耗的时间。下文按照Cube构建步骤顺序提供了一些优化经验。
+* Kylin将Cube构建任务分解为几个依次执行的步骤，这些步骤包括Hive操作、MapReduce操作和其他类型的操作。
 
 ## 1、创建Hive的中间平表
 * 这一步将数据从源Hive表提取出来(和所有join的表一起)并插入到一个中间平表。如果Cube是分区的，Kylin会加上一个时间条件以确保只有在时间范围内的数据才会被提取。你可以在这个步骤的log查看相关的Hive命令，比如：
 
-```shell
+```bash
 hive -e "USE default;
 DROP TABLE IF EXISTS kylin_intermediate_airline_cube_v3610f668a3cdb437e8373c034430f6c34;
 
@@ -55,7 +55,7 @@ num reducers for RedistributeFlatHiveTableStep = 160
 
 * 重新分发表的命令：
 
-```shell
+```bash
 hive -e "USE default;
 SET dfs.replication=2;
 SET hive.exec.compress.output=true;
