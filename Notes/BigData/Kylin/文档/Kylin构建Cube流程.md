@@ -1,7 +1,9 @@
 # Cube 构建
+
 * Kylin将Cube构建任务分解为几个依次执行的步骤，这些步骤包括Hive操作、MapReduce操作和其他类型的操作。
 
 ## 1、创建Hive的中间平表
+
 * 这一步将数据从源Hive表提取出来(和所有join的表一起)并插入到一个中间平表。如果Cube是分区的，Kylin会加上一个时间条件以确保只有在时间范围内的数据才会被提取。你可以在这个步骤的log查看相关的Hive命令，比如：
 
 ```bash
@@ -45,9 +47,10 @@ WHERE (AIRLINE.FLIGHTDATE >= '1987-10-01' AND AIRLINE.FLIGHTDATE < '2017-01-01')
 ```
 
 ## 2、重新分发中间表
+
 * 在之前的一步之后，Hive在HDFS上的目录里生成了数据文件：有些是大文件，有些是小文件甚至空文件。这种不平衡的文件分布会导致之后的MR任务出现数据倾斜的问题：有些mapper完成得很快，但其他的就很慢。针对这个问题，Kylin增加了这一个步骤来“重新分发”数据，这是示例输出:
 
-```
+```shell
 total input rows = 159869711
 expected input rows per mapper = 1000000
 num reducers for RedistributeFlatHiveTableStep = 160
@@ -81,11 +84,12 @@ kylin.job.mapreduce.mapper.input.rows=500000
 
 * 如果你的cube指定了一个高基数的列，比如”USER_ID”，作为”分片”维度(在cube的“高级设置”页面)，Kylin会让Hive根据该列的值重新分发数据，那么在该列有着相同值的行将被分发到同一个文件。这比随机要分发要好得多，因为不仅重新分布了数据，并且在没有额外代价的情况下对数据进行了预先分类，如此一来接下来的cube build处理会从中受益。在典型的场景下，这样优化可以减少40%的build时长。在这个案例中分发的语句是”`DISTRIBUTE BY USER_ID`”：
 
-* 请注意: 
-  1. “分片”列应该是高基数的维度列，并且它会出现在很多的cuboid中（不只是出现在少数的cuboid）。 使用它来合理进行分发可以在每个时间范围内的数据均匀分布，否则会造成数据倾斜，从而降低build效率。典型的正面例子是：“USER_ID”、“SELLER_ID”、“PRODUCT”、“CELL_NUMBER”等等，这些列的基数应该大于一千(`远大于reducer的数量`)。 
+* 请注意：
+  1. “分片”列应该是高基数的维度列，并且它会出现在很多的cuboid中（不只是出现在少数的cuboid）。 使用它来合理进行分发可以在每个时间范围内的数据均匀分布，否则会造成数据倾斜，从而降低build效率。典型的正面例子是：“USER_ID”、“SELLER_ID”、“PRODUCT”、“CELL_NUMBER”等等，这些列的基数应该大于一千(`远大于reducer的数量`)。
   2. ”分片”对cube的存储同样有好处，不过这超出了本文的范围。
 
 ## 3、提取事实表的唯一列
+
 * 在这一步骤Kylin运行MR任务来提取使用字典编码的维度列的唯一值。
 
 * 实际上这步另外还做了一些事情：通过HyperLogLog计数器收集cube的统计数据，用于估算每个cuboid的行数。如果你发现mapper运行得很慢，这通常表明cube的设计太过复杂，请参考
@@ -94,16 +98,20 @@ kylin.job.mapreduce.mapper.input.rows=500000
 * 你可以通过降低取样的比例（`kylin.job.cubing.inmen.sampling.percent`）来加速这个步骤，但是帮助可能不大而且影响了cube统计数据的准确性，所有我们并不推荐。
 
 ## 4、构建维度字典
+
 * 有了前一步提取的维度列唯一值，Kylin会`在内存里构建字典`。通常这一步比较快，但如果唯一值集合很大，Kylin可能会报出类似“Too high cardinality is not suitable for dictionary（字典不支持过高基数）”。对于UHC类型的列，请使用其他编码方式，比如“`fixed_length`”、“`integer`”等等。
 
 ## 5、保存cuboid的统计数据
+
 * 计算和统计所有的维度组合，并保存，其中，每一种维度组合，称为一个Cuboid。理论上来说，一个N维的Cube，便有2的N次方种维度组合。
 
 ## 6、创建 HTable
+
 * 在这一步中，列簇的设置是根据用户创建cube时候设置的，在HBase中存储的数据key是维度成员的组合，value是对应聚合函数的结果，列簇针对的是value的，一般情况下在创建cube的时候只会设置一个列簇，该列包含所有的聚合函数的结果。
 * kylin强依赖于HBase的coprocessor，所以需要在创建HTable时为该表部署coprocessor，这个文件会首先上传到HBase所在的HDFS上，然后在表的元信息中关联。
 
 ## 7.1.1、构建基础cuboid
+
 * 这一步用Hive的中间表构建基础的cuboid，是“`逐层`”构建cube算法的第一轮MR计算。Mapper的数目与第二步的reducer数目相等；Reducer的数目是根据cube统计数据估算的：默认情况下每500MB输出使用一个reducer；如果观察到reducer的数量较少，你可以将`kylin.properties`里的“`kylin.job.mapreduce.default.reduce.input.mb`”设为小一点的数值以获得过多的资源，比如:
 
 ```properties
@@ -119,6 +127,7 @@ kylin.job.mapreduce.default.reduce.input.mb=200
 * 通常来说，从N维到(N/2)维的构建比较慢，因为这是cuboid数量爆炸性增长的阶段：N维有1个cuboid，(N-1)维有N个cuboid，(N-2)维有N*(N-1)/2个cuboid，以此类推。经过(N/2)维构建的步骤，整个构建任务会逐渐变快。
 
 ## 7.2、构建cube
+
 * 这个步骤使用一个新的算法来构建cube：“`逐片`”构建（也称为“内存”构建）。它会使用一轮MR来计算所有的cuboids，但是比通常情况下更耗内存。配置文件”conf/kylin_job_inmem.xml”正是为这步而设。默认情况下它为每个mapper申请3GB内存。如果你的集群有充足的内存，你可以在上述配置文件中分配更多内存给mapper，这样它会用尽可能多的内存来缓存数据以获得更好的性能，比如：
 
 ```xml
@@ -138,21 +147,26 @@ kylin.job.mapreduce.default.reduce.input.mb=200
 * 请注意，Kylin会根据数据分布（从cube的统计数据里获得）自动选择最优的算法，没有被选中的算法对应的步骤会被跳过。`你不需要显式地选择构建算法。`
 
 ## 8、将cuboid数据转换为HFile
+
 * 这一步启动一个MR任务来将cuboid文件（`sequence file`格式）转换为HBase的HFile格式，然后在通过bulkLoad的方式将文件和HTable进行关联，以降低Hbase的负载。Kylin通过cube统计数据计算HBase的region数目，默认情况下每5GB数据对应一个region。Region越多，MR使用的reducer也会越多。如果你观察到reducer数目较小且性能较差，你可以将“`conf/kylin.properties`”里的以下参数设小一点，比如：
 
 ```properties
 kylin.hbase.region.cut=2
 kylin.hbase.hfile.size.gb=1
 ```
+
 * 如果你不确定一个region应该是多大时，联系你的HBase管理员。
 
 ## 9、将HFile导入HBase表
+
 * 这一步使用HBase API来讲HFile导入region server，这是轻量级并快速的一步。
 
 ## 10、更新cube信息
+
 * 在导入数据到HBase后，Kylin在元数据中将对应的cube segment标记为ready。
 
 ## 11、清理资源
+
 * 删除构建过程生成的垃圾。`这一步不会阻塞任何操作`，因为在前一步segment已经被标记为ready。如果这一步发生错误，不用担心，垃圾回收工作可以晚些再通过Kylin的`StorageCleanupJob`完成。
 * 整个执行过程中产生了很多的垃圾文件，其中包括：
   1. 临时的hive表；
