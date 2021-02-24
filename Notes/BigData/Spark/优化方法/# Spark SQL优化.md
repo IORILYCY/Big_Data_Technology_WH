@@ -55,6 +55,7 @@ spark-sql-test-1.0-SNAPSHOT-jar-with-dependencies.jar
 ## 3、广播join
 
 * 大表 join 小表时，可以将小表 broadcast 聚合到 Driver，然后再分发到 Executor 做 join，广播 Join 默认小表大小为10M，由参数 `spark.sql.autoBroadcastJoinThreshold` 控制
+* 可直接规避掉 shuffle
 
 1. 通过参数优化
 

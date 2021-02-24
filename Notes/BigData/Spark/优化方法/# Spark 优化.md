@@ -2,6 +2,9 @@
 
 ## 1、缓存重复使用的RDD
 
+* cache()：默认缓存级别：RDD - MEMORY_ONLY，DataSet - MEMORY_AND_DISK
+* persist()：可手动配置缓存级别
+
 ## 2、broadcast+map 代替join
 
 * 适用前提：广播的rdd较小
@@ -24,6 +27,9 @@ reduceByKey代替groupByKey
 
 ## 6、广播大变量
 
+* 每个 Executor 节点保存一份数据
+* `val broad = broadcast(rdd/df/ds)`
+
 ## 7、kryo序列化
 
 * 使用序列化的场景：
@@ -32,6 +38,14 @@ reduceByKey代替groupByKey
     3. 序列化持久策略
 
 * 使用步骤：SparkConf配置序列化类，然后注册需要序列化的自定义类
+
+```scala
+val sparkConf = new SparkConf().setAppName("test")
+    // 1 SparkConf 配置序列化类为 Kryo
+    .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    // 2 注册需要序列化的自定义类
+    .registerKryoClasses(Array(classOf[T]))
+```
 
 ## 8、参数调优
 
