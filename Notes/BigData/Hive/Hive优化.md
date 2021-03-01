@@ -5,7 +5,7 @@
 ### 1.1 count(distinct)
 
 * 使用 `SIZE(COLLECT_SET( col ))` 代替 `COUNT(DISTINCT ol)`
-* 使用 `group by` 去重后再做 `count` 操作
+* 或者也可使用 `group by` 去重后再做 `count` 操作
 
 ### 1.2 order by
 
@@ -21,5 +21,5 @@
 #### 1.2.2 没有limit限制的全局排序问题
 
 * 分组内有序的需求下可使用 `distribute by 分组字段 sort by 排序字段` 代替 `order by`
-* 全局有序时，正序可使用 `cluster by`，逆序可使用 `distribute by 排序字段 sort by 排序字段 desc`
+* 全局有序时，正序可使用 `cluster by`（只能正序，不能指定），逆序可使用 `distribute by 排序字段 sort by 排序字段 desc`
 * 使用时需要设置reducer数：`set mapreduce.job.reduces=[n];`
