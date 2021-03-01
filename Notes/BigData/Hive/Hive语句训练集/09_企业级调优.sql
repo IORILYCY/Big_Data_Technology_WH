@@ -23,15 +23,15 @@ set hive.exec.mode.local.auto.input.files.max=10;
 -- 9.3.2 大表 Join 大表
 -- （1）空Key过滤
 -- 1）配置mapred-site.xml以启用历史服务器
--- <property>
--- <name>mapreduce.jobhistory.address</name>
--- <value>hadoop102:10020</value>
--- </property>
--- <property>
---     <name>mapreduce.jobhistory.webapp.address</name>
---     <value>hadoop102:19888</value>
--- </property>
--- sbin/mr-jobhistory-daemon.sh start historyserver
+<property>
+<name>mapreduce.jobhistory.address</name>
+<value>hadoop102:10020</value>
+</property>
+<property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>hadoop102:19888</value>
+</property>
+sbin/mr-jobhistory-daemon.sh start historyserver
 
 insert overwrite table jointable select n.* from (select * from nullidtable where id is not null ) n  left join ori o on n.id = o.id;
 
@@ -97,7 +97,7 @@ set hive.exec.parallel=true;
         Comparing bigints and strings.
         Comparing bigints and doubles.
         Orderby without limit.
-</description>
+    </description>
 </property>
 
 -- 9.7 JVM重用

@@ -28,7 +28,10 @@ reduceByKey代替groupByKey
 ## 6、广播大变量
 
 * 每个 Executor 节点保存一份数据
-* `val broad = broadcast(rdd/df/ds)`
+
+```scala
+val broad = broadcast(rdd/df/ds)
+```
 
 ## 7、kryo序列化
 
@@ -57,7 +60,7 @@ val sparkConf = new SparkConf().setAppName("test")
 4. --driver-memory：1g
 5. --conf spark.default.parallelism：500-1000，每个stage默认的task数量，不配置默认一个HDFS block对应一个task。建议配置为num-executor * executor-cores的2~3倍
 6. --conf spark.storage.memoryFraction：RDD持久化占用Executor内存的比例，默认0.6
-7. --conf spark.shuffle.memoryFraction：shuffle过程中task拉去上游task输出后，进行聚合操作时能够使用Executor内存的比例，默认0.2
+7. --conf spark.shuffle.memoryFraction：shuffle过程中task拉取上游task输出后，进行聚合操作时能够使用Executor内存的比例，默认0.2
 
 * 根据作业中持久化与shuffle的多少来调整前面两个参数
 
