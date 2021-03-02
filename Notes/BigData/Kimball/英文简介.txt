@@ -30,7 +30,7 @@ The main technologies used by individuals are sqoop, hive, spark SQL and shell s
 我在项目中主要负责数仓建模和部分ETL工作，以及Kylin的建模工作。
 
 
-In my second job, there were about 60 people working on the project, divided into three development teams.
+In my second job, there are about 60 people working on the project, divided into three development teams.
 
 One team is responsible for the development of the web side home page, as well as system permissions and other management functions.
 
