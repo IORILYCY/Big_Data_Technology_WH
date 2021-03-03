@@ -111,3 +111,37 @@ set har.partfile.size = 256000000;
 
 alter table xx.xxx archive partition(pt='xxxx-xx-xx');
 ```
+
+## 3、join优化
+
+### 3.1 bucket mapjoin
+
+1. 两张表是分桶的，在创建表的时候需要指定
+2. 一个表的bucket数是另一个表bucket数的整数倍
+3. bucket列 == join列
+4. 必须是应用在map join的场景中
+
+```sql
+-- 建表
+CREATE TABLE(……) CLUSTERED BY (col_1) SORTED BY (col_1) INTO buckets_Nums BUCKETS;
+-- 参数配置
+set hive.optimize.bucketmapjoin = true;
+```
+
+### 3.2 SMB join
+
+* 使用前提：
+  1. 两张表是分桶的，在创建表的时候需要指定
+  2. 两表的bucket数相等
+  3. bucket 列 == join 列 == sort列
+  4. 需要设置一些bucket相关的参数
+
+```sql
+-- 建表
+CREATE TABLE(……) CLUSTERED BY (col_1) SORTED BY (col_1) INTO buckets_Nums BUCKETS;
+-- 参数配置
+set hive.auto.convert.sortmerge.join = true;
+set hive.optimize.bucketmapjoin = true;
+set hive.optimize.bucketmapjoin.sortedmerge = true;
+set hive.auto.convert.sortmerge.join.noconditionaltask = true;
+```
