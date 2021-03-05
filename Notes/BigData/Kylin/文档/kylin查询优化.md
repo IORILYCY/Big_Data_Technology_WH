@@ -1,0 +1,3 @@
+# Kylin查询优化
+
+Kylin中的一个hbase表（即一个segment）对应一个coprocessor，查询过程中会先发送一个request到一个regionserver上，然后HBase会把该表的数据都拉到这个regionserver上，使用coprocessor进行聚合运算。
