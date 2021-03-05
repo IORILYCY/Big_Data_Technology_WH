@@ -74,11 +74,11 @@ INSERT OVERWRITE TABLE kylin_intermediate_airline_cube_v3610f668a3cdb437e8373c03
 
 1. 首先，Kylin计算出中间表的行数，然后基于行数的大小算出重新分发数据需要的文件数。默认情况下,Kylin为每一百万行分配一个文件。在这个例子中，有1.6亿行和160个reducer，每个reducer会写一个文件。在接下来对这张表进行的MR步骤里，Hadoop会启动和文件相同数量的mapper来处理数据(通常一百万行数据比一个HDFS数据块要小)。如果你的日常数据量没有这么大或者Hadoop集群有足够的资源，你或许想要更多的并发数，这时可以将`conf/kylin.properties`里的`kylin.job.mapreduce.mapper.input.rows`设为小一点的数值，比如:
 
-```properties
-kylin.job.mapreduce.mapper.input.rows=500000
-```
+    ```properties
+    kylin.job.mapreduce.mapper.input.rows=500000
+    ```
 
-2. 其次，Kylin会运行 “`INSERT OVERWRITE TABLE … DISTRIBUTE BY` ” 形式的HiveQL来分发数据到指定数量的reducer上。
+2. 其次，Kylin会运行 “`INSERT OVERWRITE TABLE … DISTRIBUTE BY`” 形式的HiveQL来分发数据到指定数量的reducer上。
 
 * 在很多情况下，Kylin请求Hive随机分发数据到reducer，然后得到大小相近的文件，分发的语句是”`DISTRIBUTE BY RAND()`”。
 
