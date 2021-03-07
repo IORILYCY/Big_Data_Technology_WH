@@ -36,7 +36,7 @@
 | 6        | --username           | 连接数据库的用户名     |
 | 7        | --verbose            | 在控制台打印出详细信息 |
 
-### **5.2.2** **公用参数：**import
+### **5.2.2** **公用参数：** import
 
 | **序号** | **参数**                        | **说明**                                                     |
 | -------- | ------------------------------- | ------------------------------------------------------------ |
@@ -47,7 +47,7 @@
 | 5        | --mysql-delimiters              | Mysql默认的分隔符设置，字段之间以逗号分隔，行之间以\n分隔，默认转义符是\，字段值以单引号包裹。 |
 | 6        | --optionally-enclosed-by <char> | 给带有双引号或单引号的字段值前后加上指定字符。               |
 
-### **5.2.3** **公用参数：**export
+### **5.2.3** **公用参数：** export
 
 | **序号** | **参数**                              | **说明**                                   |
 | -------- | ------------------------------------- | ------------------------------------------ |
@@ -57,7 +57,7 @@
 | 4        | --input-lines-terminated-by <char>    | 行之间的分隔符                             |
 | 5        | --input-optionally-enclosed-by <char> | 给带有双引号或单引号的字段前后加上指定字符 |
 
-### **5.2.4** **公用参数：**hive
+### **5.2.4** **公用参数：** hive
 
 | **序号** | **参数**                        | **说明**                                                  |
 | -------- | ------------------------------- | --------------------------------------------------------- |
@@ -73,8 +73,6 @@
 | 10       | --hive-table                    | 后面接要创建的hive表,默认使用MySQL的表名                  |
 | 11       | --table                         | 指定关系数据库的表名                                      |
 
-
-
 公用参数介绍完之后，我们来按照命令介绍命令对应的特有参数。
 
 ### **5.2.5** **命令**&参数：import
@@ -86,7 +84,7 @@
 如：导入数据到hive中
 
 ```shell
-$ bin/sqoop import \
+bin/sqoop import \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -94,11 +92,11 @@ $ bin/sqoop import \
 --hive-import
 ```
 
-如：增量导入数据到hive中，mode=append
+<!-- 如：增量导入数据到hive中，mode=append -->
 
 ```shell
-append导入：
-$ bin/sqoop import \
+# append导入：
+bin/sqoop import \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -117,21 +115,21 @@ $ bin/sqoop import \
 如：增量导入数据到hdfs中，mode=lastmodified
 
 ```shell
-先在mysql中建表并插入几条数据：
+# 先在mysql中建表并插入几条数据：
 mysql> create table company.staff_timestamp(id int(4), name varchar(255), sex varchar(255), last_modified timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
 mysql> insert into company.staff_timestamp (id, name, sex) values(1, 'AAA', 'female');
 mysql> insert into company.staff_timestamp (id, name, sex) values(2, 'BBB', 'female');
-先导入一部分数据：
-$ bin/sqoop import \
+# 先导入一部分数据：
+bin/sqoop import \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
 --table staff_timestamp \
 --delete-target-dir \
 --m 1
-再增量导入一部分数据：
+# 再增量导入一部分数据：
 mysql> insert into company.staff_timestamp (id, name, sex) values(3, 'CCC', 'female');
-$ bin/sqoop import \
+bin/sqoop import \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -185,7 +183,7 @@ $ bin/sqoop import \
 **如：**
 
 ```shell
-$ bin/sqoop export \
+bin/sqoop export \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -210,8 +208,6 @@ $ bin/sqoop export \
 | 9        | --staging-table <staging-table-name>  | 创建一张临时表，用于存放所有事务的结果，然后将所有事务结果一次性导入到目标表中，防止错误。 |
 | 10       | --clear-staging-table                 | 如果第9个参数非空，则可以在导出操作执行前，清空临时事务结果表 |
 
-
-
 ### **5.2.7** **命令**&参数：codegen
 
 将关系型数据库中的表映射为一个Java类，在该类中有各列对应的各个字段。
@@ -219,7 +215,7 @@ $ bin/sqoop export \
 如：
 
 ```shell
-$ bin/sqoop codegen \
+bin/sqoop codegen \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -228,8 +224,6 @@ $ bin/sqoop codegen \
 --class-name Staff \
 --fields-terminated-by "\t"
 ```
-
-
 
 | **序号** | **参数**                           | **说明**                                                     |
 | -------- | ---------------------------------- | ------------------------------------------------------------ |
@@ -253,7 +247,7 @@ $ bin/sqoop codegen \
 如：
 
 ```shell
-$ bin/sqoop create-hive-table \
+bin/sqoop create-hive-table \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -280,7 +274,7 @@ $ bin/sqoop create-hive-table \
 如：
 
 ```shell
-$ bin/sqoop eval \
+bin/sqoop eval \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -293,8 +287,6 @@ $ bin/sqoop eval \
 | -------- | ------------ | ----------------- |
 | 1        | --query或--e | 后跟查询的SQL语句 |
 
-
-
 ### **5.2.10** **命令**&参数：import-all-tables
 
 可以将RDBMS中的所有表导入到HDFS中，每一个表都对应一个HDFS目录
@@ -304,7 +296,7 @@ $ bin/sqoop eval \
 如：
 
 ```shell
-$ bin/sqoop import-all-tables \
+bin/sqoop import-all-tables \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -326,8 +318,6 @@ $ bin/sqoop import-all-tables \
 | 9        | -z或--compress          |                                        |
 | 10       | --compression-codec     |                                        |
 
-
-
 ### **5.2.11** **命令**&参数：job
 
 用来生成一个sqoop任务，生成后不会立即执行，需要手动执行。
@@ -337,14 +327,14 @@ $ bin/sqoop import-all-tables \
 如：
 
 ```shell
-$ bin/sqoop job \
+bin/sqoop job \
  --create myjob -- import-all-tables \
  --connect jdbc:mysql://hadoop102:3306/company \
  --username root \
  --password 000000
-$ bin/sqoop job \
+bin/sqoop job \
 --list
-$ bin/sqoop job \
+bin/sqoop job \
 --exec myjob
 ```
 
@@ -369,13 +359,11 @@ $ bin/sqoop job \
 
 ```xml
 <property>
-	<name>sqoop.metastore.client.record.password</name>
-	<value>true</value>
-	<description>If true, allow saved passwords in the metastore.</description>
+    <name>sqoop.metastore.client.record.password</name>
+    <value>true</value>
+    <description>If true, allow saved passwords in the metastore.</description>
 </property>
 ```
-
-
 
 ### **5.2.12** **命令**&参数：list-databases
 
@@ -384,7 +372,7 @@ $ bin/sqoop job \
 如：
 
 ```shell
-$ bin/sqoop list-databases \
+bin/sqoop list-databases \
 --connect jdbc:mysql://hadoop102:3306/ \
 --username root \
 --password 000000
@@ -399,7 +387,7 @@ $ bin/sqoop list-databases \
 如：
 
 ```shell
-$ bin/sqoop list-tables \
+bin/sqoop list-tables \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000
@@ -433,8 +421,8 @@ old_staff
 如：
 
 ```shell
-创建JavaBean：
-$ bin/sqoop codegen \
+# 创建JavaBean：
+bin/sqoop codegen \
 --connect jdbc:mysql://hadoop102:3306/company \
 --username root \
 --password 000000 \
@@ -443,8 +431,8 @@ $ bin/sqoop codegen \
 --class-name Staff \
 --fields-terminated-by "\t"
 
-开始合并：
-$ bin/sqoop merge \
+# 开始合并：
+bin/sqoop merge \
 --new-data /test/new/ \
 --onto /test/old/ \
 --target-dir /test/merged \
@@ -453,13 +441,13 @@ $ bin/sqoop merge \
 --merge-key id
 ```
 
-```
+```shell
 结果：
-1	AAA	MALE
-2	BBB	MALE
-3	CCC	MALE
-4	DDD	MALE
-6	DDD	FEMALE
+1    AAA    MALE
+2    BBB    MALE
+3    CCC    MALE
+4    DDD    MALE
+6    DDD    FEMALE
 ```
 
 参数：
@@ -473,8 +461,6 @@ $ bin/sqoop merge \
 | 5        | --class-name <class> | 对应的表名或对象名，该class类是包含在jar包中的         |
 | 6        | --target-dir <path>  | 合并后的数据在HDFS里存放的目录                         |
 
-
-
 ### **5.2.15** **命令**&参数：metastore
 
 记录了Sqoop job的元数据信息，如果不启动该服务，那么默认job元数据的存储目录为~/.sqoop，可在sqoop-site.xml中修改。
@@ -484,7 +470,7 @@ $ bin/sqoop merge \
 如：启动sqoop的metastore服务
 
 ```shell
-$ bin/sqoop metastore
+bin/sqoop metastore
 ```
 
 **参数：**
