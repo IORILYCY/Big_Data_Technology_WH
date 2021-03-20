@@ -59,12 +59,12 @@ spark-sql-test-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 1. 通过参数优化
 
-```scala
-val sparkConf = new SparkConf().setAppName("test")
-    // .set("spark.sql.autoBroadcastJoinThreshold", "-1") // 禁用自动 broadcast hash join
-    .set("spark.sql.autoBroadcastJoinThreshold", "10485760") // 默认10M
-val session = SparkSession.builder().config(sparkConf).enableHiveSupport().getOrCreate()
-```
+    ```scala
+    val sparkConf = new SparkConf().setAppName("test")
+        // .set("spark.sql.autoBroadcastJoinThreshold", "-1") // 禁用自动 broadcast hash join
+        .set("spark.sql.autoBroadcastJoinThreshold", "10485760") // 默认10M
+    val session = SparkSession.builder().config(sparkConf).enableHiveSupport().getOrCreate()
+    ```
 
 2. 通过 API 调用
 
