@@ -74,7 +74,7 @@ echo "kylin_port: ${port}"
 # 4、删除Cube
 cubes=()
 
-for cube in "${cubes[@]}"; do
+for cube in ${cubes[@]}; do
   echo "Delete the cube: ${cube}"
 
   disable=$(curl -X PUT \
