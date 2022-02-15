@@ -9,35 +9,49 @@
 
 ### 2、优化后的 Hash Shuffle
 
-* 与之前不同的是，shuffle write 阶段每个 core 会创建 numReduce 的文件组，不同 task 数据按 key 做 hash/numReduce 取模将计算结果写入相应的文件组中已有的文件，最终每个文件组形成一个文件，总文件数 = numCore * numReduce
+* 与之前不同的是，shuffle write 阶段每个 core 会创建 numReduce 个文件组，不同 task 数据按 key 做 hash/numReduce 取模将计算结果写入相应的文件组中已有的文件，最终每个文件组形成一个文件，总文件数 = numCore * numReduce
+
+* 2.0版本后已删除
 
 ----
 
 ## 二、Sort Shuffle
 
-### 1、普通 Sort Shuffle
+### 1、基础 Sort Shuffle
+
+* 首先会判断shuffle类型，如果不满足启用bypass或序列化的情况，则启用`BaseShuffleHandle`
 
 1. shuffle write task 处理数据会先写入内存，当达到阈值时先对数据按 key 进行排序，然后溢写到磁盘，默认每1w条数据写入一个磁盘临时文件，task 所有数据都处理完后，会将全部的临时文件进行 merge 做合并，另外单独写一个索引文件，用于记录下游各 task 在数据文件中的 start offset 和 end offset，最终每个 task 只生成一个数据文件和一个索引文件
 2. 下游 shuffle read task 按照索引文件的记录去数据文件中拉取自己所需的数据
 
-### 2、bypass Sort Shuffle
+#### 2、 bypass Sort Shuffle
 
-* 前提：1. 非聚合类算子（如 reduceByKey） 2. shuffle read task 数量小于spark.shuffle.sort.bypassMergeThreashold 的值（默认200）
-* 与普通版不同的是，在数据溢写时不会按 key 进行排序
+* 满足以下2个条件则启用`BypassMergeSortShuffleHandle`
+  1. 该shuffle依赖中没有map端聚合操作（如 groupByKey() 算子）
+  2. shuffle read task 数量小于spark.shuffle.sort.bypassMergeThreashold 的值（默认200）
+* 与基础版不同的是，在数据溢写时不会按 key 进行排序
 
-## 三、参数调优
+#### 3、tungsten-sort shuffle
+
+* 即序列化sort shuffle
+* 满足以下3个条件则启用`SerializedShuffleHandle`
+  1. 使用的序列化器支持序列化对象的重定位（如KryoSerializer）
+  2. shuffle依赖中完全没有聚合操作
+  3. 分区数不大于常量MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE的值（最大分区ID号+1，即2^24=16777216）
+
+## 四、参数调优
 
 ### 3.1 spark.shuffle.file.buffer
 
 * 默认值：32K
 * 说明：用于设置 shuffle write task 溢写磁盘前的缓冲区大小
-* 调优：若内存资源充足，可适当调大此参数（如64K），从而减少 shuffle write 过程中的溢写次数，即减少 磁盘IO
+* 调优：若内存资源充足，可适当调大此参数（如64K），从而减少 shuffle write 过程中的溢写次数，即 `减少磁盘IO`
 
 ### 3.2 spark.reducer.maxSizeFlight
 
 * 默认值：48M
 * 说明：用于设置 shuffle read task 的缓冲区大小，决定了一次能够拉取多少数据
-* 调优：若内存资源充足，可适当调大此参数（如96M），从而减少数据拉取次数，即减少 网络IO
+* 调优：若内存资源充足，可适当调大此参数（如96M），从而减少数据拉取次数，即 `减少网络IO`
 
 ### 3.3 spark.shuffle.io.maxRetries
 
