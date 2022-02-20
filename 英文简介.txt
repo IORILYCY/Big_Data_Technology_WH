@@ -19,8 +19,8 @@ Thank you!
 
 Let me introduce the CDP system.
 
-In this project, there are seven developers on our team, two data developers, three back-end developers, 
-two front-end developers, and several other members(testers and product managers).
+In this project, there are 7 developers on our team, 2 data developers, 3 back-end developers, 
+2 front-end developers, and several other members(testers and product managers).
 And I was mainly responsible for the data platform and the label system.
 
 The platform relies on Ali Cloud EMR to integrate cluster components such as Hadoop, Hive, Spark and OSS storage system, 
@@ -37,3 +37,13 @@ finally, the calculated results are synchronized to RDS.
 
 -----------------------------------------------------------------------------------------
 
+In the BFC project, there are 4 developers on our team, 1 data developer, 1 back-end developer, 
+2 front-end developers, 1 tester and 1 product manager.
+And I was mainly responsible for the data warehouse.
+
+The data warehouse uses TiDB as the storage and computing engine, DataX as the data integration tool, 
+and DataX Web as the scheduling tool.
+
+Data collected from MangoDB, SQL Server and MySQL are stored in the ODS layer.
+Then dimensional model is created in CDM layer, and use SQL+Shell to do ETL of data, 
+and the final calculation results are stored in ADS layer.
