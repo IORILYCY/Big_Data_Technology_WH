@@ -39,7 +39,7 @@
   2. shuffle依赖中完全没有聚合操作
   3. 分区数不大于常量MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE的值（最大分区ID号+1，即2^24=16777216）
 
-## 四、参数调优
+## 三、参数调优
 
 ### 3.1 spark.shuffle.file.buffer
 

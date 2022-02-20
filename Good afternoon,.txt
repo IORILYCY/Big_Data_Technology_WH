@@ -1,0 +1,39 @@
+Good afternoon, interviewer 
+
+Firstly, thank you for your interview, and I hope I could make a good performance today. Now let me introduce myself please.
+My chinese name is Wang He, and I have graduated from Northeast Petroleum University.
+
+As a bigdata engineer, I have 6 years work experience and once worked for 3 different companies. 
+I am currently working in Fosun Group. And I am mainly responsible for data warehouse of BFC mall and Fosun CDP System. 
+In the BFC project, I was responsible for the design and construction of the data warehouse, 
+and in the CDP system, I was mainly responsible for the construction of data platform and the development of label system.
+
+The other two jobs were at Shanghai ONECONNECT and Beijing UGO Culture Development.
+And in both companies, I was mainly responsible for data analysis and processing.
+
+The above content is my self-introduction.
+I think I'm a good team player, and I sincerely hope your company can choose me. 
+Thank you!
+
+-----------------------------------------------------------------------------------------
+
+Let me introduce the CDP system.
+
+In this project, there are seven developers on our team, two data developers, three back-end developers, 
+two front-end developers, and several other members(testers and product managers).
+And I was mainly responsible for the data platform and the label system.
+
+The platform relies on Ali Cloud EMR to integrate cluster components such as Hadoop, Hive, Spark and OSS storage system, 
+and uses DataWorks for development and management.
+
+The data warehouse integrates membership data from subgroups, creates dimensional models, 
+desensitizing and ETL data using Hive and Spark. And all data is stored in OSS using Hive external tables.
+
+The label system defines labels by selecting fields and calculation rules 
+from the fact table and dimension table in the dimensional model.
+
+Then use Hive and Spark to parse label rules and calculate them, 
+finally, the calculated results are synchronized to RDS.
+
+-----------------------------------------------------------------------------------------
+
